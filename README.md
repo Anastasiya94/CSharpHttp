@@ -3,7 +3,7 @@
 
 Содержит решение Visual Studio 2017 с двумя проектами:<br>
 <b>HttpClientApp</b> - приложение WindowsForms для отправки запросов на сервер<br>
-<b>HttpServerApp</b> - консольное приложение .NET - сервер<br>
+<b>HttpServerApp</b> - консольное приложение .NET - сервер, <b>требует права администратора</b><br>
 
 Сервер имеет 3 параметра коммандной строки:<br>
 1 - обязательный - адрес файла базы данных SQLite (если файл не существует, сервер сам создаст базу с указанным именем и добавит необходимую таблицу)<br>
@@ -11,7 +11,7 @@
 3 - опциональный - максимальное количество одновременных клиентов (по умолчанию = количество ядер * 4)<br>
 
 NuGet пакеты:<br>
-HttpClientApp - Newtonsoft.Json<br>
+   HttpClientApp - Newtonsoft.Json<br>
    HttpServerApp - Newtonsoft.Json, System.Data.SQLite.Core<br>
    
 Traget Framework - <b>.NET 4.6.1</b><br>

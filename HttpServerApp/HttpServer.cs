@@ -216,7 +216,6 @@ namespace HttpServerApp
             if (args.Length > 2 && (!int.TryParse(args[2], out _max_thread_count) || _max_thread_count < Environment.ProcessorCount))
             {
                 Console.WriteLine(string.Format("not a valid thread count, or thread count < {0} (current processor count)", Environment.ProcessorCount));
-                Console.ReadKey();
                 return;
             }
             //Проверяем на допустимость использования HttpListener
