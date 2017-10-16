@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,10 +27,11 @@ namespace HttpClientApp
 
         private async void processAction(int _type)
         {
+            string inn_str = textBox_inn.Text.Replace(" ", "");
             var request = new
             {
                 type = _type, //0 = добавление, 1 = запрос
-                inn = textBox_inn.Text.Replace(" ", ""),
+                inn = inn_str.Equals("") ? -1 : Convert.ToInt64(inn_str),
                 name = textBox_name.Text
             };
             setEnabledUI(false);
@@ -77,5 +79,23 @@ namespace HttpClientApp
             processAction(0);
         }
 
+        private void textBox_inn_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) &&
+                              e.KeyChar != Convert.ToChar(Keys.Back) &&
+                              e.KeyChar != Convert.ToChar(Keys.Space)
+                              )
+                e.Handled = true;
+
+        }
+
+        private void textBox_name_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Regex.IsMatch(e.KeyChar.ToString(), @"^[a-zA-Zа-яА-Я]+$") &&
+                               e.KeyChar != Convert.ToChar(Keys.Back) &&
+                               e.KeyChar != Convert.ToChar(Keys.Space)
+                               )
+                e.Handled = true;
+        }
     }
 }

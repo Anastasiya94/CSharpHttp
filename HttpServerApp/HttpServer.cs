@@ -91,7 +91,7 @@ namespace HttpServerApp
         private class ClientRequest
         {
             public int type; //0 = добавление, 1 = запрос
-            public string inn;
+            public long inn;
             public string name;
         }
         //Тип данных для сериализации ответа сервера
@@ -120,16 +120,16 @@ namespace HttpServerApp
                     var con = OrganizationDB.CreateAndOpenConnection(database_path);
                     var query = "SELECT inn, name FROM organization ";
                     var parameters = new Dictionary<string, object>();
-                    if (request.inn != "" && request.name != "")
+                    if (request.inn != -1 && request.name != "")
                     {
                         query += "WHERE inn LIKE @INN AND name LIKE @NAME";
-                        parameters["@INN"] = "%" + request.inn + "%";
+                        parameters["@INN"] = "%" + request.inn.ToString() + "%";
                         parameters["@NAME"] = "%" + request.name + "%";
                     }
-                    else if (request.inn != "")
+                    else if (request.inn != -1)
                     {
                         query += "WHERE inn LIKE @INN";
-                        parameters["@INN"] = "%" + request.inn + "%";
+                        parameters["@INN"] = "%" + request.inn.ToString() + "%";
                     }
                     else if (request.name != "")
                     {
@@ -151,7 +151,7 @@ namespace HttpServerApp
                 //Добавление новой организации
                 else
                 {
-                    if (request.inn.Length != 10) responce.response_text = "Ошибка: ИНН должен состоять из 10 цифр";
+                    if (request.inn > 9999999999) responce.response_text = "Ошибка: ИНН не должен превышать 10 цифр";
                     else
                     {
                         OrganizationDB.AddOrganization(database_path, request.inn, request.name);
@@ -250,7 +250,7 @@ namespace HttpServerApp
         public static void CreateOrganizationTableIfNotExists(string database_path)
         {
             var con = CreateAndOpenConnection(database_path);
-            var command = new SQLiteCommand("CREATE TABLE IF NOT EXISTS organization (inn TEXT PRIMARY KEY, name TEXT NOT NULL);", con);
+            var command = new SQLiteCommand("CREATE TABLE IF NOT EXISTS organization (inn INTEGER PRIMARY KEY, name TEXT NOT NULL);", con);
             command.ExecuteNonQuery();
             con.Close();
         }
@@ -262,7 +262,7 @@ namespace HttpServerApp
             return command.ExecuteReader();
         }
 
-        public static void AddOrganization(string database_path, string inn, string name)
+        public static void AddOrganization(string database_path, long inn, string name)
         {
             var con = CreateAndOpenConnection(database_path);
             var command = new SQLiteCommand("REPLACE INTO organization (inn, name) VALUES (@INN, @NAME)", con);
